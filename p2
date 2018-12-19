@@ -1,0 +1,123 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class FileQuickSort {
+
+	private String[] array;
+	private File file;
+	private int nElems;
+	
+	public FileQuickSort(String[] array, File file) throws FileNotFoundException {
+		this.array = array;
+		this.file = file;
+
+		int count = 0;
+
+		Scanner in = new Scanner(this.file);
+		while (in.hasNextLine()) {
+			String str = in.nextLine();
+			String[] tokens = str.split(" ");
+
+			array[count++] = tokens[0];
+
+		}
+
+		System.out.println(count);
+		
+		nElems = count;
+		
+		in.close();
+	}
+	
+	public void quickSort() {
+		recQuickSort(0, nElems-1);
+	}
+	
+	public void recQuickSort(int left, int right) {
+		if(right - left <= 0) {
+			return;
+		} else {
+			String pivot = array[right];
+			int partition = partitionIt(left, right, pivot);
+			recQuickSort(left, partition-1);
+			recQuickSort(partition + 1, right);
+		}
+	}
+
+	public int partitionIt(int left, int right, String pivot) {
+		int leftPtr = left - 1;
+		int rightPtr = right;
+
+		while (true) {
+			while (leftPtr < right && array[++leftPtr].compareTo(pivot) < 0) {
+				; // nop
+			}
+
+			while (rightPtr > left && array[--rightPtr].compareTo(pivot) > 0) {
+				; // nop
+			}
+
+			if (leftPtr >= rightPtr) {
+				break;
+			} else {
+				swap(leftPtr, rightPtr);
+			}
+		} // end outer while loop
+		swap(leftPtr, right);
+		return leftPtr;
+	}
+
+	private void swap(int dex1, int dex2) {
+		String temp = array[dex1];
+		array[dex1] = array[dex2];
+		array[dex2] = temp;
+	}
+	
+	public void display() {
+		for (int i = 0; i < nElems; i++) {
+			System.out.print(array[i] + " ");
+		}
+		System.out.println();
+	}
+	
+}
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+public class Demo {
+	public static void main(String[] args) throws FileNotFoundException {
+
+		String[] test1 = new String[100];
+		String[] test2 = new String[1000];
+		String[] test3 = new String[10000];
+
+		File file1 = new File("data/text1.txt");
+		File file2 = new File("data/text2.txt");
+		File file3 = new File("data/text3.txt");
+
+		FileQuickSort tester1 = new FileQuickSort(test1, file1);
+
+		FileQuickSort tester2 = new FileQuickSort(test2, file2);
+
+		FileQuickSort tester3 = new FileQuickSort(test3, file3);
+
+		long[] times = new long[3];
+
+		long t = System.nanoTime();
+		tester1.quickSort();
+		times[0] = System.nanoTime() - t;
+
+		t = System.nanoTime();
+		tester2.quickSort();
+		times[1] = System.nanoTime() - t;
+
+		t = System.nanoTime();
+		tester3.quickSort();
+		times[2] = System.nanoTime() - t;
+
+		System.out.println(
+				"Test one time: " + times[0] + "\nTest two time: " + times[1] + "\nTest three time: " + times[2]);
+	}
+}
