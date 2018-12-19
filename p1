@@ -1,0 +1,90 @@
+public class Coins {
+
+	private int[] values;
+	private int nElems;
+
+	public Coins(int nElems) {
+		values = new int[nElems];
+		this.nElems = 0;
+	}
+
+	public void quickSort() {
+		recQuickSort(0, nElems - 1);
+	}
+
+	public void recQuickSort(int left, int right) {
+		if (right - left <= 0) {
+			return;
+		} else {
+			int pivot = values[right];
+			int partition = partitionIt(left, right, pivot);
+			recQuickSort(left, partition - 1);
+			recQuickSort(partition + 1, right);
+		}
+	}
+
+	public int partitionIt(int left, int right, int pivot) {
+		int leftPtr = left - 1;
+		int rightPtr = right;
+
+		while (true) {
+			while (leftPtr < right && values[++leftPtr] < pivot) {
+				; // nop
+			}
+
+			while (rightPtr > left && values[--rightPtr] > pivot) {
+				; // nop
+			}
+
+			if (leftPtr >= rightPtr) {
+				break;
+			} else {
+				swap(leftPtr, rightPtr);
+			}
+		} 
+		swap(leftPtr, right);
+		return leftPtr;
+	}
+
+	private void swap(int dex1, int dex2) {
+		int temp = values[dex1];
+		values[dex1] = values[dex2];
+		values[dex2] = temp;
+	}
+
+	public void insert(int value) {
+		values[nElems++] = value;
+	}
+
+	public void display() {
+		for (int i = 0; i < nElems; i++) {
+			System.out.print(values[i] + " ");
+		}
+		System.out.println();
+	}
+}
+
+public class Demo {
+
+	public static void main(String[] args) {
+		Coins purse = new Coins(10);
+		
+		purse.insert(2);
+		purse.insert(10);
+		purse.insert(5);
+		purse.insert(3);
+		purse.insert(7);
+		purse.insert(1);
+		purse.insert(9);
+		purse.insert(6);
+		purse.insert(8);
+		purse.insert(4);
+
+		purse.display();
+		
+		purse.quickSort();
+		
+		purse.display();
+	}
+
+}
